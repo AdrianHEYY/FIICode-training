@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 
+extern class Game;
 class Weapon {
 public:
 	Weapon();
@@ -7,7 +8,11 @@ public:
 	virtual void update();
 	virtual void onClick();
 protected:
+	Game* game;
+	
 	float damage;
+	float area;
+
 	sf::Texture texture;
 	sf::RectangleShape sprite;
 };

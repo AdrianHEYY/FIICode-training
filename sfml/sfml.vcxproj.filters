@@ -52,6 +52,9 @@
     <Filter Include="Header Files\game\weapon\dvd_logo">
       <UniqueIdentifier>{452db053-6ca9-4902-a9ba-85f939be8cc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\game\weapon\weapons_enum">
+      <UniqueIdentifier>{c51cf1bc-eb26-49bc-a9ef-b5d2dd1d41c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -86,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="dvd_logo.cpp">
       <Filter>Header Files\game\weapon\dvd_logo</Filter>
+    </ClCompile>
+    <ClCompile Include="weapons_enum.h">
+      <Filter>Header Files\game\weapon\weapons_enum</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

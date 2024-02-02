@@ -4,6 +4,8 @@
 #include "window.h"
 #include "dvd_logo.h"
 
+#include<vector>
+
 extern class Game;
 
 class Player {
@@ -14,12 +16,15 @@ public:
 	inline sf::Vector2f getPlayerPos() { return player.getPosition(); };
 	inline sf::Vector2f getPlayerSize() { return player.getSize(); };
 	void subtractHealth(float damage);
+	void destroyWeapon();
 private:
 	Game* game;
 
 	util::Health_Bar hb;
 
-	Dvd_Logo dl;
+	Weapon* weapon;
+
+	float dmg_multiplier;
 
 	sf::RectangleShape player;
 	sf::Texture texture;

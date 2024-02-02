@@ -28,6 +28,7 @@
     <ClCompile Include="text.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="util.cpp" />
+    <ClCompile Include="weapons_enum.h" />
     <ClCompile Include="wepon.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>

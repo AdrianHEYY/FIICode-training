@@ -20,7 +20,8 @@ Player::Player(Game* game)
 }
 
 void Player::draw() {
-	dl.draw();
+	if (weapon != nullptr)
+		weapon->draw();
 	win.draw(player);
 	hb.draw();
 }
@@ -30,7 +31,14 @@ void Player::subtractHealth(float damage) {
 }
 
 void Player::update() {
-	dl.update();
+	if (weapon != nullptr) {	
+		weapon->update();
+	}
+
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && weapon == nullptr) {
+		weapon = new Dvd_Logo(this, player.getPosition() + player.getSize() / 2.0f);
+	}
 
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
@@ -78,3 +86,9 @@ void Player::update() {
 	hb.updatePosition();
 }
 
+void Player::destroyWeapon()
+{
+	if (weapon != nullptr)
+		delete weapon;
+	weapon = nullptr;
+}
