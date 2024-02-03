@@ -1,15 +1,18 @@
+#include <random>
+
+#include "weapon.h"
 #include "enemy.h"
 #include "window.h"
 #include "game.h"
 #include "util.h"
 #include "timer.h"
 
-#include <random>
 Enemy::Enemy(Game * game) 
 	:game(game), move_speed(1.0f)
 {
-	health = rand() % 101;
-	damage = rand() % 6;
+	health = 11;
+	//rand() % 101 + 1
+	damage = rand() % 6 + 1;
 
 	texture.loadFromFile("samples/enemy_texture.png");
 	enemy.setTexture(&texture);
@@ -23,8 +26,39 @@ void Enemy::draw()
 	win.draw(enemy);
 }
 
+void Enemy::takeDamage(Weapon* weapon) {
+	auto exists_last_time = immune_to_weapon.find(weapon);
+	bool poate_lua_damage = 0;
+	if (exists_last_time == immune_to_weapon.end()) {
+		poate_lua_damage = 1;
+	}
+	else {
+		std::chrono::high_resolution_clock::time_point last_time = exists_last_time->second;
+		std::chrono::high_resolution_clock::time_point now_time = std::chrono::high_resolution_clock::now();
+		long long ms_between = std::chrono::duration_cast<std::chrono::milliseconds>(now_time - last_time).count();
+		if (ms_between > weapon->getTimeBetweenHits()) {
+			poate_lua_damage = 1;
+		}
+	}
+	if (!poate_lua_damage) return;
+
+	health -= weapon->getDamage();
+	if (health <= 0) {
+		alive = 0;
+	}
+	immune_to_weapon[weapon] = std::chrono::high_resolution_clock::now();
+}
+
+void Enemy::weaponDestroyed(Weapon* weapon) {
+	std::cout << "Inainte: " << immune_to_weapon.size() << '\n';
+	immune_to_weapon.erase(weapon);
+	std::cout << "Dupa: " << immune_to_weapon.size() << '\n';
+}
+
 void Enemy::update()
 {
+	if (!alive) return;
+
 	sf::Vector2f player_pos = game->getPlayerPos();
 	sf::Vector2f player_size = game->getPlayerSize();
 	
@@ -62,6 +96,7 @@ void Enemy::update()
 	sf::Vector2f new_pos = sf::Vector2f(enemy.getPosition().x + unitate.x, enemy.getPosition().y + unitate.y);
 
 	enemy.setPosition(new_pos); 
+}
 
-
+Enemy::~Enemy() {
 }

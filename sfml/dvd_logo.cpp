@@ -1,14 +1,20 @@
-#include "dvd_logo.h"
-#include "window.h"
-#include <random>
-#include <math.h>
 #include <iostream>
+#include <math.h>
+#include <random>
+
+#include "dvd_logo.h"
 #include "player.h"
+#include "window.h"
+#include "util.h"
 
-Dvd_Logo::Dvd_Logo(Player* owner,sf::Vector2f original_position)
-	:timer(util::Timer(true)), owner(owner)
+#include "player.h"
+#include "game.h"
+
+Dvd_Logo::Dvd_Logo(Game* game, Player* owner, sf::Vector2f original_position)
+	:timer(util::Timer(true)), owner(owner), game(game)
 {
-
+	damage = 10.0f;
+	time_between_hits = 450;
 	sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(win));
 	
 	float distance = sqrt(pow(mouse_pos.x - original_position.x, 2) + pow(mouse_pos.y - original_position.y, 2));
@@ -29,39 +35,8 @@ Dvd_Logo::Dvd_Logo(Player* owner,sf::Vector2f original_position)
 	sprite.setSize({ 100.0f, 50.0f });
 	sprite.setPosition(original_position - sprite.getSize() / 2.0f);
 
-	std::string vertex =
-		"" \
-		"	void main()" \
-		"	{" \
-		"		gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; " \
-		"		gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;" \
-		"		gl_FrontColor = gl_Color; " \
-		"	}";
-	std::string fragment =
-		"	uniform sampler2D texture;" \
-		"	uniform int time;" \
-		"	void main()" \
-		"	{" \
-		"		vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);" \
-		"		if (pixel.a != 0.0) {" \
-		"			 int a = time - (time / 255) * 255;" \
-		"			 float normalizedA = float(a) / 255.0;" \
-		"			 int parte = time / 255;" \
-		"			 parte = parte - (parte / 3) * 3;" \
-		"			 if (parte == 0) {" \
-		"				pixel = vec4(1.0 - normalizedA, normalizedA, 0.0, 1.0);" \
-		"			 }" \
-		"			 else if (parte == 1) {" \
-		"				pixel = vec4(0.0, 1.0 - normalizedA, normalizedA, 1.0);" \
-		"			 }" \
-		"			 else if (parte == 2) {" \
-		"				pixel = vec4(normalizedA, 0.0, 1.0 - normalizedA, 1.0);" \
-		"			 }" \
-		"		}" \
-		"		gl_FragColor = pixel;" \
-		"	};";
 	shader = new sf::Shader();
-	shader->loadFromMemory(vertex, fragment);
+	shader->loadFromFile("shader.vert", "shader.frag");
 	shader->setUniform("texture", texture);
 }
 
@@ -72,8 +47,6 @@ void Dvd_Logo::draw() {
 void Dvd_Logo::update() {
 	shader->setUniform("time", int(timer.getElapsed()/10));
     
-	if (bounces_left <= 0) owner->destroyWeapon();
-	
 	sf::Vector2f position = sprite.getPosition();
 	sf::Vector2f size = sprite.getSize();
 
@@ -81,16 +54,37 @@ void Dvd_Logo::update() {
 	if ((velocity.x < 0 &&position.x - velocity.x < 0) || (velocity.x > 0 && position.x + size.x + velocity.x > win.getSize().x)) {
 		velocity.x = -velocity.x;
 		bounces_left--;
+		if (bounces_left <= 0) {
+			owner->destroyWeapon();
+			return;
+		}
 	}
 	if ((velocity.y<0&&position.y - velocity.y < 0)|| (velocity.y>0&&position.y + size.y + velocity.y > win.getSize().y)) {
 		velocity.y = -velocity.y;
 		bounces_left--;
+		if (bounces_left <= 0) {
+			owner->destroyWeapon();
+			return;
+		}
 	}
 
-
 	sprite.setPosition(sprite.getPosition() + velocity * projectile_speed);
+	
+	std::vector<std::unique_ptr<Enemy>> &enemies = game->getEnemies();
+	for (int j = 0; j < enemies.size(); j++) {
+		auto i = enemies[j].get();
+
+		sf::Vector2f position = i->getPos();
+		if (util::collision(i->getPos(), i->getSize(), sprite.getPosition(), sprite.getSize()) == 1) {
+			i->takeDamage(this);
+			if (i->isAlive() == 0) {
+				enemies.erase(enemies.begin() + j);
+			}
+		}
+	}
 }
 
 Dvd_Logo::~Dvd_Logo() {
+	std::cout << "DVD DISTRUS\n";
 	delete shader;
 }

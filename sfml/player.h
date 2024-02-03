@@ -13,18 +13,17 @@ public:
 	Player(Game* game);
 	void draw();
 	void update();
-	inline sf::Vector2f getPlayerPos() { return player.getPosition(); };
-	inline sf::Vector2f getPlayerSize() { return player.getSize(); };
 	void subtractHealth(float damage);
 	void destroyWeapon();
+
+	inline sf::Vector2f getPos() { return player.getPosition(); };
+	inline sf::Vector2f getSize() { return player.getSize(); };
 private:
 	Game* game;
 
 	util::Health_Bar hb;
 
-	Weapon* weapon;
-
-	float dmg_multiplier;
+	Weapon* weapon = nullptr;
 
 	sf::RectangleShape player;
 	sf::Texture texture;

@@ -19,12 +19,19 @@ void Game::run_one() {
 	player.draw();
 }
 
+void Game::destroyedWeapon(Weapon* weapon) {
+	for (auto &i : enemies) {
+		i->weaponDestroyed(weapon);
+	}
+}
+
 void Game::hitPlayer(float damage) {
 	player.subtractHealth(damage);
 }
+
 sf::Vector2f Game::getPlayerPos() {
-	return player.getPlayerPos();
+	return player.getPos();
 }
 sf::Vector2f Game::getPlayerSize() {
-	return player.getPlayerSize();
+	return player.getSize();
 }

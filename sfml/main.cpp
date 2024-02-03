@@ -10,11 +10,95 @@
 
 #include <Windows.h>
 
+#include "random.h"
+
+enum room_types {
+	// -1-2-3-
+	// 4-5-6-7
+	// -8-9-A-
+	// B-C-D-E
+	// -F-G-H-
+	// I-J-K-L
+	// -M-N-O-
+	// A = 10, B = 11, C = 12 ... O = 24 (nerd emoji sa nu stricam cum arata)
+
+	fight_1_small,
+	// -1-
+	// 4-5
+	// -8-
+	fight_1_medium,
+	// -1-2-
+	// 4---6
+	// -8-9-
+	fight_1_large,
+	// -1-2-3-
+	// 4-----7
+	// B-----E
+	// I-----L
+	// -M-N-O-
+	fight_1_reverse_L_shape,
+	//-1-2-3
+	//4-----7
+	//-8-9---
+	//   -D-E
+	//   --H-
+	starter,
+	// -1-
+	// 4-5
+	// -8-
+	finisher
+	// -1-
+	// 4-5
+	// -8-
+};
+
+struct room {
+	room(int max_doors, int possible_door_placements) {
+		this->max_doors = max_doors;
+		this->possible_door_placements = possible_door_placements;
+	}
+	int max_doors;
+	int possible_door_placements;
+};
+const std::map<room_types, room> room_configurations = { 
+	// bitul 1 (1 << 0) este in dreapta de tot
+	// bitul 2 (1 << 1) este in dreapta de tot - 1
+	// bitul 32 (1 << 31) este primul dupa 0b
+	{fight_1_small, room({4, int(0b00000000000000000000000000000000)})}
+};
+
+class Room {
+public:
+	Room();
+	inline int getRoomID() { return id; };
+	inline room_types getRoomType() { return room_type; };
+	inline sf::Vector2f getRoomDimensions() { return sf::Vector2f(float(width), float(height)); };
+	inline int getDoors() { return doors; };
+private:
+	room_types room_type;
+
+	int width;
+	int height;
+	
+	int doors; 
+	int id;
+};
+
+class Map {
+public:
+	Map(unsigned int seed = rand())
+	: generator(seed){
+	  
+	}
+private:
+	Procedural generator;
+
+	int layout[20][20] = { {} };
+	std::map<int, std::unique_ptr<Room>> id_room;
+};
+
 int main() {
-
 	srand(time(NULL));
-
-	Game game;
 
 	std::chrono::high_resolution_clock::time_point last_frame = std::chrono::high_resolution_clock::now();
 
@@ -37,9 +121,12 @@ int main() {
 				break;
 			}
 		}
+
 		win.clear(sf::Color::White);
 
-		game.run_one();
+		//game.run_one();
+
+
 
 		win.display();
 

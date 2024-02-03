@@ -55,6 +55,12 @@
     <Filter Include="Header Files\game\weapon\weapons_enum">
       <UniqueIdentifier>{c51cf1bc-eb26-49bc-a9ef-b5d2dd1d41c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\game\util\mouse">
+      <UniqueIdentifier>{34bff475-4a27-4a2a-a3dc-3a2f915107d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\random">
+      <UniqueIdentifier>{6fd779bc-caac-42d1-84ac-5a6acafd17a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -93,6 +99,12 @@
     <ClCompile Include="weapons_enum.h">
       <Filter>Header Files\game\weapon\weapons_enum</Filter>
     </ClCompile>
+    <ClCompile Include="mouse.cpp">
+      <Filter>Header Files\game\util\mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="random.cpp">
+      <Filter>Header Files\random</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="window.h">
@@ -125,5 +137,19 @@
     <ClInclude Include="dvd_logo.h">
       <Filter>Header Files\game\weapon\dvd_logo</Filter>
     </ClInclude>
+    <ClInclude Include="mouse.h">
+      <Filter>Header Files\game\util\mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="random.h">
+      <Filter>Header Files\random</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader.vert">
+      <Filter>Header Files\game\weapon\dvd_logo</Filter>
+    </None>
+    <None Include="shader.frag">
+      <Filter>Header Files\game\weapon\dvd_logo</Filter>
+    </None>
   </ItemGroup>
 </Project>

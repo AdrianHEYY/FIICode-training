@@ -24,7 +24,9 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="health_bar.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mouse.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="random.cpp" />
     <ClCompile Include="text.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="util.cpp" />
@@ -37,12 +39,18 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="health_bar.h" />
+    <ClInclude Include="mouse.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="random.h" />
     <ClInclude Include="text.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="weapon.h" />
     <ClInclude Include="window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader.frag" />
+    <None Include="shader.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

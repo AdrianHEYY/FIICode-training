@@ -6,5 +6,5 @@ enum weapon_name {
 
 enum weapon_type {
 	ACTIVE,
-	PASSSIVE
+	PASSIVE
 };

@@ -4,6 +4,7 @@
 #include "game.h"
 #include "window.h"
 #include <iostream>
+
 Player::Player(Game* game)
 	: game(game), move_speed(1.0f), hb(&player, 100.0f, 100.0f)
 {
@@ -35,9 +36,8 @@ void Player::update() {
 		weapon->update();
 	}
 
-
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && weapon == nullptr) {
-		weapon = new Dvd_Logo(this, player.getPosition() + player.getSize() / 2.0f);
+		weapon = new Dvd_Logo(game, this, player.getPosition() + player.getSize() / 2.0f);
 	}
 
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
@@ -88,6 +88,7 @@ void Player::update() {
 
 void Player::destroyWeapon()
 {
+	game->destroyedWeapon(weapon);
 	if (weapon != nullptr)
 		delete weapon;
 	weapon = nullptr;
