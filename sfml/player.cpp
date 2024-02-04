@@ -8,7 +8,6 @@
 Player::Player(Game* game)
 	: game(game), move_speed(1.0f), hb(&player, 100.0f, 100.0f), animation(player)
 {
-	//texture.loadFromFile("samples/player_texture.png");
 	sf::Vector2f middle = sf::Vector2f(win.getSize());
 	player.setSize(sf::Vector2f(60.0f, 90.0f));
 	middle.x -= player.getSize().x;
@@ -16,7 +15,6 @@ Player::Player(Game* game)
 	middle.x /= 2;
 	middle.y /= 2;
 	player.setPosition(middle);
-	//player.setTexture(&texture);
 	velocity = sf::Vector2f(0.0f, 0.0f);
 }
 

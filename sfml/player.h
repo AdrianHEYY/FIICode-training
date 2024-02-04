@@ -28,7 +28,7 @@ private:
 	Weapon* weapon = nullptr;
 
 	sf::RectangleShape player;
-	sf::Texture texture;
+
 	sf::Vector2f velocity;
 	float move_speed;
 
