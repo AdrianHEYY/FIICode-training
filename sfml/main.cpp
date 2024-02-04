@@ -64,12 +64,15 @@ const std::map<room_types, room> room_configurations = {
 	// bitul 1 (1 << 0) este in dreapta de tot
 	// bitul 2 (1 << 1) este in dreapta de tot - 1
 	// bitul 32 (1 << 31) este primul dupa 0b
-	{fight_1_small, room({4, int(0b00000000000000000000000000000000)})}
+	//                                     ONMLKJIHGFEDCBA987654321
+	{fight_1_small, room({4, int(0b00000000000000000000000000000000)})},
 };
 
 class Room {
 public:
-	Room();
+	Room() {
+
+	}
 	inline int getRoomID() { return id; };
 	inline room_types getRoomType() { return room_type; };
 	inline sf::Vector2f getRoomDimensions() { return sf::Vector2f(float(width), float(height)); };
@@ -102,6 +105,8 @@ int main() {
 
 	std::chrono::high_resolution_clock::time_point last_frame = std::chrono::high_resolution_clock::now();
 
+	Game game;
+
 	while (win.isOpen()) {
 		sf::Event ev;
 		while (win.pollEvent(ev)) {
@@ -124,9 +129,7 @@ int main() {
 
 		win.clear(sf::Color::White);
 
-		//game.run_one();
-
-
+		game.run_one();
 
 		win.display();
 

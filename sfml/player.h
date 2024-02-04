@@ -4,6 +4,8 @@
 #include "window.h"
 #include "dvd_logo.h"
 
+#include "player_animation.h"
+
 #include<vector>
 
 extern class Game;
@@ -29,4 +31,6 @@ private:
 	sf::Texture texture;
 	sf::Vector2f velocity;
 	float move_speed;
+
+	Player_Animation animation;
 };

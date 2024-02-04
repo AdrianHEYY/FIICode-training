@@ -6,17 +6,17 @@
 #include <iostream>
 
 Player::Player(Game* game)
-	: game(game), move_speed(1.0f), hb(&player, 100.0f, 100.0f)
+	: game(game), move_speed(1.0f), hb(&player, 100.0f, 100.0f), animation(player)
 {
-	texture.loadFromFile("samples/player_texture.png");
+	//texture.loadFromFile("samples/player_texture.png");
 	sf::Vector2f middle = sf::Vector2f(win.getSize());
-	player.setSize(sf::Vector2f(50.0f, 100.0f));
+	player.setSize(sf::Vector2f(60.0f, 90.0f));
 	middle.x -= player.getSize().x;
 	middle.y -= player.getSize().y;
 	middle.x /= 2;
 	middle.y /= 2;
 	player.setPosition(middle);
-	player.setTexture(&texture);
+	//player.setTexture(&texture);
 	velocity = sf::Vector2f(0.0f, 0.0f);
 }
 
@@ -82,6 +82,7 @@ void Player::update() {
 	normalized.y *= 3;
 	player.setPosition(player.getPosition() + normalized * move_speed * delta_time);
 
+	animation.update(velocity, player);
 
 	hb.updatePosition();
 }
