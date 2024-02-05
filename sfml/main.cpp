@@ -190,6 +190,55 @@ std::vector<sf::Vector2i> getDisplacements(room_types room_type, sf::Vector2i po
 	};
 	return {};
 }
+std::string getRoomString(room_types room_type) {
+	switch (room_type) {
+	case fight_1_small:
+	{
+		return "SMLALL";
+		break;
+	}
+	case fight_1_medium:
+	{
+		return "MEDIUM";
+		break;
+	}
+	case fight_1_large:
+	{
+		return "LARGE";
+		break;
+	}
+	case fight_1_reverse_L_shape:
+	{
+		return "Reverse_L";
+		break;
+	}
+	};
+	return "Something else?";
+}
+std::string getRoomLayout(room_types room_type) {
+	switch (room_type) {
+	case fight_1_small:
+	{
+		return "x";
+		break;
+	}
+	case fight_1_medium:
+	{
+		return "xx/xx";
+		break;
+	}
+	case fight_1_large:
+	{
+		return "xxx/xxx/xxx";
+		break;
+	}
+	case fight_1_reverse_L_shape:
+	{
+		return "xxx/--x";
+		break;
+	}
+	};
+}
 
 class Room {
 public:
@@ -222,15 +271,14 @@ public:
 			}
 		}
 		int camera_start_x = generator.getRandomNumber() % 20, camera_start_y = generator.getRandomNumber() % 20;
-		//camera_start_x = 19;
-		//camera_start_y = 19;
+		// camera_start_x = 17; camera_start_y = 13;
 
 		layout[camera_start_x][camera_start_y] = 1;
 		id_room[1] = std::make_unique<Room>(starter, 1);
 
-		//std::cout << "Camera start: " << camera_start_x << ' ' << camera_start_y << '\n';
+		std::cout << "Camera start: " << camera_start_x << ' ' << camera_start_y << '\n';
 
-		generateFurther(camera_start_x, camera_start_y, 'N');
+		generateFurther(camera_start_x, camera_start_y, 'W');
 	}
 	void out_test() {
 		for (int i = 0; i < 20; i++) {
@@ -247,79 +295,49 @@ private:
 	bool incape(room_types room_type, sf::Vector2i st_sus) {
 		bool debug = 0;
 		if (debug == 1) {
-			std::cout << "Incape ";
-			switch (room_type) {
-			case fight_1_small:
-			{
-				std::cout << "SMLALL\n";
-				break;
-			}
-			case fight_1_medium:
-			{
-				std::cout << "MEDIUM\n";
-				break;
-			}
-			case fight_1_large:
-			{
-				std::cout << "larghert\n";
-				break;
-			}
-			case fight_1_reverse_L_shape:
-			{
-				std::cout << "Reverse L\n";
-				break;
-			}
-			};
+			std::cout << getRoomString(room_type) << ' ' << st_sus.x << ' ' << st_sus.y << '\n';
 		}
-		//std::cout << st_sus.x << ' ' << st_sus.y << '\n';
 
-		std::string room_layout;
-		switch (room_type) {
-		case fight_1_small:
-		{
-			room_layout = "x";
-			break;
-		}
-		case fight_1_medium:
-		{
-			room_layout = "xx/xx";
-			break;
-		}
-		case fight_1_large:
-		{
-			room_layout = "xxx/xxx/xxx";
-			break;
-		}
-		case fight_1_reverse_L_shape:
-		{
-			room_layout = "xxx/--x";
-			break;
-		}
-		};
+		std::string room_layout = getRoomLayout(room_type);
 
 		int start_x = st_sus.x, start_y = st_sus.y;
 		int width = room_sizes.find(room_type)->second.x;
 		int height = room_sizes.find(room_type)->second.y;
-		//std::cout << "width/height: " << width << ' ' << height << '\n';
+
 		for (int i = start_x; i < start_x + height; i++) {
 			for (int j = start_y; j < start_y + width; j++) {
 				int poz_string = (i - start_x) * (width + 1) + (j - start_y);
-				
-				//std::cout << i << ' ' << j << room_layout[poz_string] << '\n';
 
 				if (!nu_iese(i, j) && room_layout[poz_string] == 'x') {
-					//std::cout << "iese" << i << ' ' << j << '\n';
+					std::cout << "iese si room_lay = x\n";
 					return 0;
 				}
-				//std::cout << i - start_x << ' ' << j - start_y << ' ' << poz_string << '\n';
 				if (room_layout[poz_string] == 'x' && layout[i][j] != 0) {
-					//std::cout << "lay != 0 " << i << ' ' << j << '\n';
+					std::cout << "room_lay = x si e poz ocupata\n";
 					return 0;
 					
 				}
 			}
 		}
 		return 1;
+	}
+	void place(room_types room_type, sf::Vector2i st_sus, int id) {
+		std::string room_layout = getRoomLayout(room_type);
+
+		int start_x = st_sus.x, start_y = st_sus.y;
+		int width = room_sizes.find(room_type)->second.x;
+		int height = room_sizes.find(room_type)->second.y;
+
+		for (int i = start_x; i < start_x + height; i++) {
+			for (int j = start_y; j < start_y + width; j++) {
+				int poz_string = (i - start_x) * (width + 1) + (j - start_y);
+
+				if (room_layout[poz_string] == 'x') {
+					layout[i][j] = id;
+				}
+
+			}
+		}
 	}
 	bool nu_iese(sf::Vector2i xy) {
 		return nu_iese(xy.x, xy.y);
@@ -331,97 +349,60 @@ private:
 	/// <param name="y_curent"></param>
 	/// <param name="door_position">E=East, W=West, S=South, N=North</param>
 	void generateFurther(int x_curent, int y_curent, char direction) {
-		sf::Vector2i next_space;
+		sf::Vector2i dir;
 		switch (direction) {
 		case 'E':
 		{
-			next_space = sf::Vector2i(1.0f, 0.0f);
+			dir = sf::Vector2i(0.0f, 1.0f);
 			break;
 		}
 		case 'W':
 		{
-			next_space = sf::Vector2i(-1.0f, 0.0f);
+			dir = sf::Vector2i(0.0f, -1.0f);
 			break;
 		}
 		case 'S':
 		{
-			next_space = sf::Vector2i(0.0f, 1.0f);
+			dir = sf::Vector2i(1.0f, 0.0f);
 			break;
 		}
 		case 'N':
 		{
-			next_space = sf::Vector2i(0.0f, -1.0f);
+			dir = sf::Vector2i(-1.0f, 0.0f);
 			break;
 		}
 		}
 
+		std::vector<std::pair<room_types, sf::Vector2i>> optiuni;
+
 		for (auto& i : placeable) {
-			sf::Vector2i dir;
-			switch (direction) {
-			case 'E':
-			{
-				dir = sf::Vector2i(0.0f, 1.0f);
-				break;
-			}
-			case 'W':
-			{
-				dir = sf::Vector2i(0.0f, -1.0f);
-				break;
-			}
-			case 'S':
-			{
-				dir = sf::Vector2i(1.0f, 0.0f);
-				break;
-			}
-			case 'N':
-			{
-				dir = sf::Vector2i(-1.0f, 0.0f);
-				break;
-			}
-			}
 			sf::Vector2i spatiu_nou = sf::Vector2i(x_curent, y_curent) + dir;
-			//std::cout << "Spatiu nou: " << spatiu_nou.x << ' ' << spatiu_nou.y << '\n';
 			std::vector<sf::Vector2i> displacements = getDisplacements(i, spatiu_nou, direction);
 			for (auto& k : displacements) {
-				//std::cout << "Inainte displacement: " << k.x << ' ' << k.y << '\n';
 				if (incape(i, spatiu_nou + k)) {
-					std::cout << "Incape ";
-					switch (i) {
-					case fight_1_small:
-					{
-						std::cout << "SMLALLn    ";
-						break;
-					}
-					case fight_1_medium:
-					{
-						std::cout << "MEDIUM    ";
-						break;
-					}
-					case fight_1_large:
-					{
-						std::cout << "LARGE    ";
-						break;
-					}
-					case fight_1_reverse_L_shape:
-					{
-						std::cout << "Reverse L    ";
-						break;
-					}
-					};
-					std::cout << "Displacement: " << k.x << ' ' << k.y << '\n';
+					optiuni.push_back({i, sf::Vector2i(spatiu_nou + k)});
 				}
 			}
-		}std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
-
-		//next_space = sf::Vector2i(x_curent, y_curent) + next_space;
-		if (!nu_iese(sf::Vector2i(x_curent,y_curent)+next_space)) { // iese din grid
-			return;
 		}
-		//!					room_type -> st_sus la room-ul respectiv
-		std::vector<std::pair<room_types, sf::Vector2i>> can_be_placed;
-		
 
+		//for (auto& i : optiuni) {
+		//	std::cout << getRoomString(i.first) << ' ' << i.second.x << ' ' << i.second.y << '\n';
+		//}
+
+		int optiune = generator.getRandomNumber(optiuni.size());
+
+		place(optiuni[optiune].first, optiuni[optiune].second, ++max_id);
+
+		// acum ia toate spatiile care sunt ocupate si au langa ele 1 spatiu care nu e ocupat, adauga-l ca o posibilitate in alt vector, ia un nr random, si apeleaza functia asta cu acea pozitie. 
+		// nr. de camere general dn layout se poate decide tot cu random(), sansa scade cu 3 % de fiecare data sau cv de genul idk
+		// la final doar pune camera final undeva random
+		// ai grija sa nu se umple de tot fara camera final
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 20; j++) {
+				std::cout << layout[i][j] << ' ';
+			} std::cout << '\n';
 		}
+	}
 	
 private:
 
@@ -429,6 +410,7 @@ private:
 
 	int layout[20][20] = { {} };
 	std::map<int, std::unique_ptr<Room>> id_room;
+	int max_id = 1;
 	std::vector<room_types> placeable = { fight_1_small, fight_1_medium, fight_1_large, fight_1_reverse_L_shape };
 };
 
